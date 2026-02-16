@@ -269,14 +269,27 @@ export default function Home() {
                         d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
                       />
                     </svg>
-                    <span className="text-zinc-300">Copy API URL</span>
+                    <span className="text-zinc-300">Copy URL</span>
                   </>
                 )}
               </button>
               <button
                 onClick={handleDeleteAll}
-                className="px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg hover:bg-red-500/20 text-sm font-medium transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg hover:bg-red-500/20 text-sm font-medium transition-colors"
               >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
                 Clear All
               </button>
             </div>
@@ -500,13 +513,17 @@ export default function Home() {
       {/* Confirm Modal */}
       <ConfirmModal
         isOpen={confirmModal.isOpen}
-        title={confirmModal.type === "deleteAll" ? "Delete All Logs" : "Delete Log"}
+        title={
+          confirmModal.type === "deleteAll" ? "Delete All Logs" : "Delete Log"
+        }
         message={
           confirmModal.type === "deleteAll"
             ? "Are you sure you want to delete all logs? This action cannot be undone and will permanently remove all callback history."
             : "Are you sure you want to delete this log? This action cannot be undone."
         }
-        confirmText={confirmModal.type === "deleteAll" ? "Delete All" : "Delete"}
+        confirmText={
+          confirmModal.type === "deleteAll" ? "Delete All" : "Delete"
+        }
         cancelText="Cancel"
         variant="danger"
         onConfirm={confirmDelete}
