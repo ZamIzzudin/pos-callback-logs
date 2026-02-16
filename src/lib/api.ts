@@ -2,13 +2,13 @@ import { LogsResponse } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
 
-export async function getLogs(page: number = 1, limit: number = 10, method?: string, endpoint?: string): Promise<LogsResponse> {
+export async function getLogs(page: number = 1, limit: number = 10, sort?: string, endpoint?: string): Promise<LogsResponse> {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
   });
   
-  if (method) params.append("method", method);
+  if (sort) params.append("sort", sort);
   if (endpoint) params.append("endpoint", endpoint);
 
   const res = await fetch(`${API_BASE_URL}/logs?${params.toString()}`);

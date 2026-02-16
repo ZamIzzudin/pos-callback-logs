@@ -28,7 +28,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedLog, setSelectedLog] = useState<CallbackLog | null>(null);
-  const [filterMethod, setFilterMethod] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("desc");
   const [filterEndpoint, setFilterEndpoint] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [confirmModal, setConfirmModal] = useState<{
@@ -46,7 +46,7 @@ export default function Home() {
         const response: LogsResponse = await getLogs(
           page,
           10,
-          filterMethod,
+          sortBy,
           filterEndpoint,
         );
         setLogs(response.data);
@@ -57,7 +57,7 @@ export default function Home() {
         setLoading(false);
       }
     },
-    [filterMethod, filterEndpoint],
+    [sortBy, filterEndpoint],
   );
 
   const handleRefresh = () => {
@@ -67,7 +67,7 @@ export default function Home() {
   useEffect(() => {
     fetchLogs(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterMethod, filterEndpoint]);
+  }, [sortBy, filterEndpoint]);
 
   const handleDelete = async (id: string) => {
     setConfirmModal({ isOpen: true, type: "delete", logId: id });
@@ -273,25 +273,6 @@ export default function Home() {
                   </>
                 )}
               </button>
-              <button
-                onClick={handleDeleteAll}
-                className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg hover:bg-red-500/20 text-sm font-medium transition-colors"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                  />
-                </svg>
-                Clear All
-              </button>
             </div>
           </div>
         </div>
@@ -300,33 +281,6 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-6 py-6">
         {/* Filters */}
         <div className="flex gap-3 mb-6">
-          <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2">
-            <span className="text-zinc-500 text-sm">Method</span>
-            <select
-              value={filterMethod}
-              onChange={(e) => setFilterMethod(e.target.value)}
-              className="bg-transparent text-white text-sm outline-none cursor-pointer"
-            >
-              <option value="" className="bg-zinc-900">
-                All
-              </option>
-              <option value="GET" className="bg-zinc-900">
-                GET
-              </option>
-              <option value="POST" className="bg-zinc-900">
-                POST
-              </option>
-              <option value="PUT" className="bg-zinc-900">
-                PUT
-              </option>
-              <option value="PATCH" className="bg-zinc-900">
-                PATCH
-              </option>
-              <option value="DELETE" className="bg-zinc-900">
-                DELETE
-              </option>
-            </select>
-          </div>
           <div className="flex-1 flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3">
             <svg
               className="w-4 h-4 text-zinc-500"
@@ -369,26 +323,74 @@ export default function Home() {
             {pagination.total.toLocaleString()}{" "}
             {pagination.total === 1 ? "log" : "logs"}
           </span>
-          <button
-            onClick={handleRefresh}
-            disabled={loading}
-            className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg hover:bg-zinc-800 text-sm font-medium transition-colors disabled:opacity-50"
-          >
-            <svg
-              className={`w-4 h-4 text-zinc-400 ${loading ? "animate-spin" : ""}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDeleteAll}
+              className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg hover:bg-red-500/20 text-sm font-medium transition-colors"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            <span className="text-zinc-300">Refresh</span>
-          </button>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              Clear All
+            </button>
+            <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5">
+              <svg
+                className="w-4 h-4 text-zinc-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                />
+              </svg>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-transparent text-white text-sm outline-none cursor-pointer"
+              >
+                <option value="desc" className="bg-zinc-900">
+                  Newest First
+                </option>
+                <option value="asc" className="bg-zinc-900">
+                  Oldest First
+                </option>
+              </select>
+            </div>
+            <button
+              onClick={handleRefresh}
+              disabled={loading}
+              className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg hover:bg-zinc-800 text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              <svg
+                className={`w-4 h-4 text-zinc-400 ${loading ? "animate-spin" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              <span className="text-zinc-300">Refresh</span>
+            </button>
+          </div>
         </div>
 
         {/* Logs List */}
